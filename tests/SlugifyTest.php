@@ -12,40 +12,19 @@
 namespace Bingogg\Slugify\Tests;
 
 use Bingogg\Slugify\Slugify;
-use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 /**
  * SlugifyTest
  *
  * @category  test
- * @package   org.Bingogg.slugify
+ * @package   bingogg14/slugify
  * @author    Pavlo Harashchenko <bingogg14@gmail.com>
- * @author    Ivo Bathke <ivo.bathke@gmail.com>
- * @author    Marchenko Alexandr
- * @copyright 2012-2014 Pavlo Harashchenko
+ * @copyright 2023 Pavlo Harashchenko
  * @license   http://www.opensource.org/licenses/MIT The MIT License
  */
 class SlugifyTest extends MockeryTestCase
 {
-    /**
-     * @var Slugify
-     */
-    private $slugify;
-
-    /**
-     * @var \Bingogg\Slugify\RuleProvider\RuleProviderInterface|\Mockery\MockInterface
-     */
-    private $provider;
-
-    protected function setUp(): void
-    {
-        $this->provider = Mockery::mock('\Bingogg\Slugify\RuleProvider\RuleProviderInterface');
-        $this->provider->shouldReceive('getRules')->andReturn([]);
-
-        $this->slugify = new Slugify([], $this->provider);
-    }
-
     public function testReplaceWhitespacesWithReplacement()
     {
         $slugify = new Slugify();
@@ -102,7 +81,11 @@ class SlugifyTest extends MockeryTestCase
         $this->assertSame('foobarbaz', $slugify->slugify('foo bar baz', ['replacement' => '']));
     }
 
-    // //    public function testOptionsRemove() {}
+    public function testOptionsRemove() {
+        $slugify = new Slugify();
+
+        $this->assertSame('foo-bar-baz', $slugify->slugify('foo *+~.() bar \'"!:@ baz', ['remove' => '/[$*_+~.()\'"!\-:@]/']));
+    }
 
     public function testOptionsRemoveRegexWithoutGFlag()
     {
