@@ -12,96 +12,105 @@
 namespace Bingogg\Slugify\Tests;
 
 use Bingogg\Slugify\Slugify;
-use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 /**
- * SlugifyTest
+ * LocalesTest
  *
  * @category  test
- * @package   org.Bingogg.slugify
+ * @package   bingogg14/slugify
  * @author    Pavlo Harashchenko <bingogg14@gmail.com>
- * @author    Ivo Bathke <ivo.bathke@gmail.com>
- * @author    Marchenko Alexandr
- * @copyright 2012-2014 Pavlo Harashchenko
+ * @copyright 2023 Pavlo Harashchenko
  * @license   http://www.opensource.org/licenses/MIT The MIT License
  */
 class LocalesTest extends MockeryTestCase
 {
-    /**
-     * @var Slugify
-     */
-    private $slugify;
-
-    /**
-     * @var \Bingogg\Slugify\RuleProvider\RuleProviderInterface|\Mockery\MockInterface
-     */
-    private $provider;
-
-    protected function setUp(): void
-    {
-        $this->provider = Mockery::mock('\Bingogg\Slugify\RuleProvider\RuleProviderInterface');
-        $this->provider->shouldReceive('getRules')->andReturn([]);
-
-        $this->slugify = new Slugify([], $this->provider);
-    }
-
-    public function testReplaceWhitespacesWithReplacement()
+    public function testBgBulgarian()
     {
         $slugify = new Slugify();
 
-        $this->assertSame('foo-bar-baz', $slugify->slugify('foo bar baz'));
-        $this->assertSame('foo_bar_baz', $slugify->slugify('foo bar baz', ['replacement' => '_']));
+        $alphabet = 'А а, Б б, В в, Г г, Д д, Е е, Ж ж, З з, И и, Й й, ' .
+            'К к, Л л, М м, Н н, О о, П п, Р р, С с, Т т, У у, ' .
+            'Ф ф, Х х, Ц ц, Ч ч, Ш ш, Щ щ, Ъ ъ, ѝ ь, Ю ю, Я я';
+
+        $this->assertSame('A-a-B-b-V-v-G-g-D-d-E-e-Zh-zh-Z-z-I-i-J-j-K-k-L-l-M-m-N-n-O-o-P-p-R-r-S-s-T-t-U-u-F-f-H-h-C-c-Ch-ch-Sh-sh-Sh-sh-U-u-u-Yu-yu-Ya-ya', $slugify->slugify($alphabet));
     }
 
-    public function testRemoveDuplicatesOfTheReplacementCharacter()
+    public function testSrCSerbianCyrillic()
     {
         $slugify = new Slugify();
 
-        $this->assertSame('foo-bar', $slugify->slugify('foo , bar'));
+        $alphabet = 'А а, Б б, В в, Г г, Д д, Ђ ђ, Е е, Ж ж, З з, И и, ' .
+            'Ј ј, К к, Л л, Љ љ, М м, Н н, Њ њ, О о, П п, Р р, ' .
+            'С с, Т т, Ћ ћ, У у, Ф ф, Х х, Ц ц, Ч ч, Џ џ, Ш ш';
+
+        $this->assertSame('A-a-B-b-V-v-G-g-D-d-DJ-dj-E-e-Zh-zh-Z-z-I-i-J-j-K-k-L-l-LJ-lj-M-m-N-n-NJ-nj-O-o-P-p-R-r-S-s-T-t-C-c-U-u-F-f-H-h-C-c-Ch-ch-DZ-dz-Sh-sh', $slugify->slugify($alphabet));
+
     }
 
-    public function testRemoveTrailingSpaceIfAny()
+    public function testSrLSerbianLatin()
     {
         $slugify = new Slugify();
 
-        $this->assertSame('foo-bar-baz', $slugify->slugify(' foo bar baz '));
+        $alphabet = 'A a, B b, V v, G g, D d, Đ đ, E e, Ž ž, Z z, I i, ' .
+            'J j, K k, L l, Lj lj, M m, N n, Nj nj, O o, P p, R r, ' .
+            'S s, T t, Ć ć, U u, F f, H h, C c, Č č, Dž dž, Š š';
+
+        $this->assertSame('A-a-B-b-V-v-G-g-D-d-DJ-dj-E-e-Z-z-Z-z-I-i-J-j-K-k-L-l-Lj-lj-M-m-N-n-Nj-nj-O-o-P-p-R-r-S-s-T-t-C-c-U-u-F-f-H-h-C-c-C-c-Dz-dz-S-s', $slugify->slugify($alphabet));
     }
 
-    public function testRemoveNotAllowedChars()
+    public function testTrTurkish()
     {
         $slugify = new Slugify();
 
-        $this->assertSame('foo-bar-baz', $slugify->slugify('foo, bar baz'));
-        $this->assertSame('foo-bar-baz', $slugify->slugify('foo- bar baz'));
-        $this->assertSame('foo-bar-baz', $slugify->slugify('foo] bar baz'));
-        $this->assertSame('foo-bar-baz', $slugify->slugify('foo  bar--baz'));
+        $alphabet = 'A a, B b, C c, Ç ç, D d, E e, F f, G g, Ğ ğ, H h, ' .
+            'I ı, İ i, J j, K k, L l, M m, N n, O o, Ö ö, P p, ' .
+            'R r, S s, Ş ş, T t, U u, Ü ü, V v, Y y, Z z';
+
+        $this->assertSame('A-a-B-b-C-c-C-c-D-d-E-e-F-f-G-g-G-g-H-h-I-i-I-i-J-j-K-k-L-l-M-m-N-n-O-o-O-o-P-p-R-r-S-s-S-s-T-t-U-u-U-u-V-v-Y-y-Z-z', $slugify->slugify($alphabet));
     }
 
-    public function testLeaveAllowedChars()
+    public function testKaGeorgian()
     {
         $slugify = new Slugify();
 
-        $allowed = ['*', '+', '~', '.', '(', ')', '\'', '"', '!', ':', '@'];
-        foreach ($allowed as $symbol) {
-            $this->assertSame('foo-'.$symbol.'-bar-baz', $slugify->slugify('foo '.$symbol.' bar baz'));
-        }
+        $alphabet = 'ა, ბ, გ, დ, ე, ვ, ზ, თ, ი, კ, ლ, ' .
+            'მ, ნ, ო, პ, ჟ, რ, ს, ტ, უ, ფ, ქ, ' .
+            'ღ, ყ, შ, ჩ, ც, ძ, წ, ჭ, ხ, ჯ, ჰ';
+
+        $this->assertSame('a-b-g-d-e-v-z-t-i-k-l-m-n-o-p-zh-r-s-t-u-f-k-gh-q-sh-ch-ts-dz-ts-ch-kh-j-h', $slugify->slugify($alphabet));
+
     }
 
-    public function testOptionsReplacement()
+    public function testKkKazakhCyrillic()
     {
         $slugify = new Slugify();
 
-        $this->assertSame('foo_bar_baz', $slugify->slugify('foo bar baz', ['replacement' => '_']));
+        $alphabet = 'Ә ә, Ғ ғ, Қ қ, Ң ң, Ү ү, Ұ ұ, Һ һ, Ө ө';
+
+        $this->assertSame('AE-ae-GH-gh-KH-kh-NG-ng-UE-ue-U-u-H-h-OE-oe', $slugify->slugify($alphabet));
+
     }
 
-    public function testOptionsReplacementEmptyString()
+    public function testViVietnamese()
     {
         $slugify = new Slugify();
 
-        $this->assertSame('foobarbaz', $slugify->slugify('foo bar baz', ['replacement' => '']));
+        $alphabet = 'Đ đ';
+
+        $this->assertSame('DJ-dj', $slugify->slugify($alphabet));
+        $this->assertSame('D-d', $slugify->slugify($alphabet, ['locale' => 'vi']));
     }
 
-    // //    public function testOptionsRemove() {}
 
+    public function testDeGerman()
+    {
+        $slugify = new Slugify();
+
+        $alphabet = 'Ä ä Ö ö Ü ü';
+
+        $this->assertSame('A-a-O-o-U-u', $slugify->slugify($alphabet));
+        $this->assertSame('AE-ae-OE-oe-UE-ue', $slugify->slugify($alphabet, ['locale' => 'de']));
+
+    }
 }
