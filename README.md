@@ -98,7 +98,7 @@ After that you can retrieve the `Bingogg\Slugify\Slugify` service (or the `slugi
 
 ## Change Log
 
-### Version 1.4.5 (15 April 2023)
+### Version 1.4.5 (11 April 2023)
 
 - Public beta version port
 
